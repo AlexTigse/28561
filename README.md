@@ -6,7 +6,7 @@ TALLER 1: IDENTIFICACIÓN DE TIPOS DE DATOS
 
 Nombre: Dicson Tigse
 Nivel: Primer Nivel
-Fecha: (pon la fecha)
+Fecha: 
 
 1. INTRODUCCIÓN
 
