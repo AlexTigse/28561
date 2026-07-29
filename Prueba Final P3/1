@@ -1,1 +1,121 @@
+#include <stdio.h>
 
+int main() {
+    int minimo, maximo;
+    int maxIntentos;
+    int intentos = 0;
+    int matriz[10][3];
+    int adivinado = 0;
+    int numeroSecreto;
+    int numero, i, j;
+    int valido;
+    int repetido;
+    int resultado;
+    unsigned int semilla;
+
+    printf("=====================================\n");
+    printf("   JUEGO: ADIVINA EL NUMERO SECRETO\n");
+    printf("=====================================\n\n");
+
+    // RF01
+    do {
+        printf("Ingrese el limite minimo del rango: ");
+        scanf("%d", &minimo);
+        printf("Ingrese el limite maximo del rango: ");
+        scanf("%d", &maximo);
+
+        if (minimo >= maximo) {
+            printf("Error: el minimo debe ser menor que el maximo.\n\n");
+        }
+    } while (minimo >= maximo);
+
+    // RF02
+    do {
+        printf("Ingrese la cantidad maxima de intentos (1 a 10): ");
+        scanf("%d", &maxIntentos);
+
+        if (maxIntentos < 1 || maxIntentos > 10) {
+            printf("Error: debe estar entre 1 y 10.\n\n");
+        }
+    } while (maxIntentos < 1 || maxIntentos > 10);
+
+    // Generar numero secreto sin usar stdlib.h
+    semilla = minimo + maximo + maxIntentos + 7;
+    semilla = (semilla * 25173 + 13849) % 65536;
+    numeroSecreto = minimo + (semilla % (maximo - minimo + 1));
+
+    printf("\nRango: [%d - %d] | Intentos disponibles: %d\n", minimo, maximo, maxIntentos);
+    printf("Comencemos!\n\n");
+
+    while (intentos < maxIntentos && adivinado == 0) {
+
+        printf("Intento %d de %d - Ingrese un numero: ", intentos + 1, maxIntentos);
+        scanf("%d", &numero);
+
+        valido = 1;
+
+        // RF03
+        if (numero < minimo || numero > maximo) {
+            printf("Numero fuera de rango.\n\n");
+            valido = 0;
+        }
+
+        if (valido == 1) {
+            repetido = 0;
+            for (j = 0; j < intentos; j++) {
+                if (matriz[j][1] == numero) {
+                    repetido = 1;
+                }
+            }
+            if (repetido == 1) {
+                printf("Ese numero ya lo ingresaste.\n\n");
+                valido = 0;
+            }
+        }
+
+        if (valido == 1) {
+            if (numero < numeroSecreto) {
+                resultado = 0;
+                printf("El numero es BAJO.\n\n");
+            } else if (numero > numeroSecreto) {
+                resultado = 1;
+                printf("El numero es ALTO.\n\n");
+            } else {
+                resultado = 2;
+                adivinado = 1;
+                printf("Felicidades! Adivinaste el numero.\n\n");
+            }
+
+            // RF04
+            matriz[intentos][0] = intentos + 1;
+            matriz[intentos][1] = numero;
+            matriz[intentos][2] = resultado;
+
+            intentos = intentos + 1;
+        }
+    }
+
+    // RF05
+    printf("=====================================\n");
+    printf("       RESUMEN DE INTENTOS\n");
+    printf("=====================================\n");
+    printf("Intento   Valor   Resultado\n");
+
+    for (i = 0; i < intentos; i++) {
+        printf("%d         %d       ", matriz[i][0], matriz[i][1]);
+
+        if (matriz[i][2] == 0) {
+            printf("BAJO\n");
+        } else if (matriz[i][2] == 1) {
+            printf("ALTO\n");
+        } else {
+            printf("CORRECTO\n");
+        }
+    }
+
+    if (adivinado == 0) {
+        printf("\nNo lograste adivinar. El numero secreto era: %d\n", numeroSecreto);
+    }
+
+    return 0;
+}
